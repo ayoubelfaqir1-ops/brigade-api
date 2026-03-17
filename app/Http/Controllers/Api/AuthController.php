@@ -19,10 +19,13 @@ class AuthController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
+        $firstUser = User::count() == 0;
+
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $firstUser ? 'admin' : 'client',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
