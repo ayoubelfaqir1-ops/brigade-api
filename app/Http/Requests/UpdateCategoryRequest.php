@@ -11,7 +11,7 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->role === 'admin';
     }
 
     /**
@@ -23,7 +23,8 @@ class UpdateCategoryRequest extends FormRequest
     {
         return [
             "name"=>"sometimes|required|string|min:3|max:25",
-            "description"=>"sometimes|required|string|min:3|max:50"
+            "description"=>"sometimes|required|string|min:3|max:50",
+            "color"=>["sometimes","string","regex:/^#[0-9A-Fa-f]{6}$/"],
         ];
     }
 }

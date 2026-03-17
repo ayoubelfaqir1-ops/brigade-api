@@ -11,7 +11,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->role === 'admin';
     }
 
     /**
@@ -22,8 +22,9 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"required|string|min:3|max:20",
-            "description"=>"required|string|min:10|max:40"
+            "name"=>"required|string|min:3|max:20|unique:categories",
+            "description"=>"required|string|min:10|max:40",
+            "color"=>["required","string","regex:/^#[0-9A-Fa-f]{6}$/"],
         ];
     }
 }
