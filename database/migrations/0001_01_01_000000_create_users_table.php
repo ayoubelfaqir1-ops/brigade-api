@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->enum('role',['admin','client'])->default('client');
+            $table->json('dietary_tags')->nullable();
             $table->timestamps();
         });
 

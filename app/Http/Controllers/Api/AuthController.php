@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProfileRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,14 +12,8 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     // Register
-    public function register(Request $request)
+    public function register(StoreProfileRequest $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
         $firstUser = User::count() == 0;
 
         $user = User::create([
