@@ -48,14 +48,5 @@ class User extends Authenticatable
             'dietary_tags' => 'array',
         ];
     }
-
-    public function categories() 
-    {
-        return $this->hasMany(Category::class);
-    }
-
-    public function plats()
-    {
-        return $this->hasMany(Plat::class);
-    }
+    
 }

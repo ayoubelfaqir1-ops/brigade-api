@@ -17,7 +17,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $categories = $request->user()->categories()->with('plats')->get();
+            $categories = Category::with('plats')->get();
             return response()->json($categories, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch categories'], 500);
@@ -30,7 +30,7 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         try {
-            $category = $request->user()->categories()->create($request->validated());
+            $category = Category::create($request->validated());
             return response()->json($category, 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create category'], 500);

@@ -23,4 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile',[ProfileController::class, 'show']);
     Route::patch('/profile',[ProfileController::class, 'update']);
     Route::apiResource('plats', PlatController::class);
+    Route::post('plats/{plat}/image', [PlatController::class, 'updateImage']);
 });

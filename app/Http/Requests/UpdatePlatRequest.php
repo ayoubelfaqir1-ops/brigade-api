@@ -23,7 +23,7 @@ class UpdatePlatRequest extends FormRequest
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'price' => 'sometimes|numeric|min:0',
-            'category_id' => 'sometimes|exists:categories,id'
+            'category_id' => 'sometimes|exists:categories,id',
         ];
     }
 }

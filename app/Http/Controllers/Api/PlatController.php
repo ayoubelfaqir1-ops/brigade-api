@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Plat;
 use App\Http\Requests\StorePlatRequest;
 use App\Http\Requests\UpdatePlatRequest;
+use App\Http\Requests\UploadImageRequest;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Request;
 
 class PlatController extends Controller
@@ -15,20 +17,21 @@ class PlatController extends Controller
      */
     public function index(Request $request)
     {
-        $query = $request->user()->plats()->with('category');
-        
+        $query = Plat::with('category');
+
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-        
+
         if ($request->has('category_id')) {
             $query->where('category_id', $request->category_id);
         }
-        
+
         if ($request->has('available')) {
             $query->where('is_available', $request->boolean('available'));
         }
-        
+
+        // gest used to exxtract the param per_page from the url the default value if that param not founded is 15
         $plats = $query->paginate($request->get('per_page', 15));
         return response()->json($plats, 200);
     }
@@ -38,7 +41,7 @@ class PlatController extends Controller
      */
     public function store(StorePlatRequest $request)
     {
-        $plat = $request->user()->plats()->create($request->validated());
+        $plat = Plat::create($request->validated());
         return response()->json($plat->load('category'), 201);
     }
 
@@ -47,7 +50,6 @@ class PlatController extends Controller
      */
     public function show(Plat $plat)
     {
-        $this->authorize('view', $plat);
         return response()->json($plat->load('category'), 200);
     }
 
@@ -57,7 +59,7 @@ class PlatController extends Controller
     public function update(UpdatePlatRequest $request, Plat $plat)
     {
         $plat->update($request->validated());
-        return response()->json($plat->load('category'), 200);
+        return response()->json($plat->fresh()->load('category'));
     }
 
     /**
@@ -66,11 +68,25 @@ class PlatController extends Controller
     public function destroy(Plat $plat)
     {
         $this->authorize('delete', $plat);
-        
+
         $plat->delete();
 
         return response()->json([
             'message' => 'Plat deleted successfully'
         ], 200);
+    }
+
+    public function updateImage(UploadImageRequest $request, Plat $plat)
+    {
+
+        if ($plat->getRawOriginal('image')) {
+            Storage::disk('public')->delete($plat->getRawOriginal('image'));
+        }
+        $imagePath = $request->file('image')->store('plats', 'public');
+        $plat->update([
+            'image' => $imagePath,
+        ]);
+
+        return response()->json($plat);
     }
 }

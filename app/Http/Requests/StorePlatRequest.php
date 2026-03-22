@@ -11,7 +11,7 @@ class StorePlatRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->role === 'admin';
     }
 
     /**
@@ -20,10 +20,11 @@ class StorePlatRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:plats,name,NULL,id,user_id,' . auth()->id(),
-            'description' => 'nullable|string|max:1000',
-            'price' => 'required|numeric|min:0|max:9999.99',
-            'category_id' => 'required|exists:categories,id'
+            'name'         => 'required|string|max:255|unique:plats',
+            'description'  => 'nullable|string|max:1000',
+            'price'        => 'required|numeric|min:0|max:9999.99',
+            'category_id'  => 'required|integer|exists:categories,id',
+            'is_available' => 'boolean',
         ];
     }
 
@@ -35,6 +36,9 @@ class StorePlatRequest extends FormRequest
         return [
             'name.unique' => 'You already have a plat with this name.',
             'price.max' => 'Price cannot exceed 9999.99.',
+            'image.image' => 'The file must be an image.',
+            'image.mimes' => 'Only jpg, jpeg, png and webp are allowed.',
+            'image.max'   => 'Image size must not exceed 2MB.',
         ];
     }
 }
