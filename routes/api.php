@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PlatController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\IngredientController;
+use App\Http\Controllers\api\RecommendationController;
 use App\Models\Ingredient;
 
 Route::get('/user', function (Request $request) {
@@ -27,4 +28,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('plats', PlatController::class);
     Route::post('plats/{plat}/image', [PlatController::class, 'updateImage']);
     Route::apiResource('ingredients', IngredientController::class);
+    Route::apiResource('recommendations', RecommendationController::class);
 });
