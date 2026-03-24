@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PlatController;
-use App\Http\Controllers\api\ProfileController;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\IngredientController;
+use App\Models\Ingredient;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -24,4 +26,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/profile',[ProfileController::class, 'update']);
     Route::apiResource('plats', PlatController::class);
     Route::post('plats/{plat}/image', [PlatController::class, 'updateImage']);
+    Route::apiResource('ingredients', IngredientController::class);
 });
