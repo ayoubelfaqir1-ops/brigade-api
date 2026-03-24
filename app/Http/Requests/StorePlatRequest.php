@@ -25,6 +25,8 @@ class StorePlatRequest extends FormRequest
             'price'        => 'required|numeric|min:0|max:9999.99',
             'category_id'  => 'required|integer|exists:categories,id',
             'is_available' => 'boolean',
+            'ingredients'  => 'sometimes|array',
+            'ingredients.*'    => 'integer|exists:ingredients,id',
         ];
     }
 

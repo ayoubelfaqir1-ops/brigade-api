@@ -24,6 +24,8 @@ class UpdatePlatRequest extends FormRequest
             'description' => 'nullable|string',
             'price' => 'sometimes|numeric|min:0',
             'category_id' => 'sometimes|exists:categories,id',
+            'ingredients'  => 'sometimes|array',
+            'ingredients.*'  => 'integer|exists:ingredients,id',
         ];
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Attribute;
-use Illuminate\Container\Attributes\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class Plat extends Model
 {
@@ -18,6 +18,7 @@ class Plat extends Model
         'category_id',
         'user_id',
         'image',
+        'is_available',
     ];
 
     protected $casts = [
@@ -33,6 +34,11 @@ class Plat extends Model
 
     public function category()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    public function ingredients()
+    {
+        return $this->belongsToMany(Ingredient::class);
     }
 }

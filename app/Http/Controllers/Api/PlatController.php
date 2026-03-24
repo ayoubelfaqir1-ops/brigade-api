@@ -17,7 +17,7 @@ class PlatController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Plat::with('category');
+        $query = Plat::with('category','ingredients');
 
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -42,6 +42,10 @@ class PlatController extends Controller
     public function store(StorePlatRequest $request)
     {
         $plat = Plat::create($request->validated());
+        if($request->filled('ingredients'))
+        {
+            $plat->ingredients()->attach($request->ingredients);
+        }
         return response()->json($plat->load('category'), 201);
     }
 
@@ -50,7 +54,7 @@ class PlatController extends Controller
      */
     public function show(Plat $plat)
     {
-        return response()->json($plat->load('category'), 200);
+        return response()->json($plat->load('category','ingredients'), 200);
     }
 
     /**
@@ -59,7 +63,11 @@ class PlatController extends Controller
     public function update(UpdatePlatRequest $request, Plat $plat)
     {
         $plat->update($request->validated());
-        return response()->json($plat->fresh()->load('category'));
+        if($request->has('ingredients'))
+        {
+            $plat->ingredients()->sync($request->ingredients);
+        }
+        return response()->json($plat->fresh()->load('category','ingredients'));
     }
 
     /**
@@ -88,5 +96,10 @@ class PlatController extends Controller
         ]);
 
         return response()->json($plat);
+    }
+
+    public function ingredients(Plat $plat)
+    {
+        return response()->json($plat->load('ingredients'));
     }
 }

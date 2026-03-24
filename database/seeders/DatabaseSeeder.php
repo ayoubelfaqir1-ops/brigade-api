@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Plat;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +14,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // create admin user
+        $user = User::create([
+            'name'     => 'Admin',
+            'email'    => 'admin@test.com',
+            'password' => 'password',
+            'role'     => 'admin',
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // create categories
+        $moroccan = Category::create([
+            'name' => 'Moroccan',
+            'description' => 'traditional and delecious moroccan products',
+            'color' => '#045362',
+            ]);
+        $italian  = Category::create([
+            'name' => 'Italian',
+            'description' => 'italients products',
+            'color' => '#048392',
+            ]);
+
+        // create plats
+        Plat::create([
+            'name'        => 'Couscous',
+            'price'       => 45.00,
+            'category_id' => $moroccan->id,
+            'is_available' => true,
+    
+        ]);
+
+        Plat::create([
+            'name'        => 'Tajine',
+            'price'       => 55.00,
+            'category_id' => $moroccan->id,
+            'is_available' => true,
         ]);
     }
 }
