@@ -28,5 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('plats', PlatController::class);
     Route::post('plats/{plat}/image', [PlatController::class, 'updateImage']);
     Route::apiResource('ingredients', IngredientController::class);
-    Route::apiResource('recommendations', RecommendationController::class);
+    Route::get('recommendations', [RecommendationController::class,'index']);
+    Route::post('recommendations/analyze/{plat}', [RecommendationController::class,'store']);
+    Route::get('recommendations/{plat}', [RecommendationController::class,'index']);
 });
