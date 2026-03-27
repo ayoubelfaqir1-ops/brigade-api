@@ -75,8 +75,6 @@ class PlatController extends Controller
      */
     public function destroy(Plat $plat)
     {
-        $this->authorize('delete', $plat);
-
         $plat->delete();
 
         return response()->json([

@@ -43,7 +43,6 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         try {
-            $this->authorize('view',$category);
             return response()->json($category->load('plats'), 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Category not found'], 404);
@@ -69,7 +68,6 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         try {
-            $this->authorize('delete',$category);
             $category->delete();
             return response()->json(['message' => 'Category deleted successfully'], 200);
         } catch (\Exception $e) {
@@ -83,7 +81,6 @@ class CategoryController extends Controller
     public function plats(Category $category)
     {
         try {
-            $this->authorize('view', $category);
             $plats = $category->plats;
             return response()->json($plats, 200);
         } catch (\Exception $e) {
@@ -97,8 +94,6 @@ class CategoryController extends Controller
     public function stats(Category $category)
     {
         try {
-            $this->authorize('view', $category);
-            
             $stats = [
                 'plats_count' => $category->plats()->count(),
                 'average_price' => $category->plats()->avg('price') ?? 0,

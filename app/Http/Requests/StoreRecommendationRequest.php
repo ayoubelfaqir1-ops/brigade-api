@@ -22,7 +22,7 @@ class StoreRecommendationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'plat_id' => 'required|integer|exists:plats,id',
+            //
         ];
     }
 }
