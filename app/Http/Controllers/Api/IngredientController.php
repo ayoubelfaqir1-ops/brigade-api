@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIngredientRequest;
 use App\Http\Requests\UpdateIngredientRequest;
+use App\Http\Resources\IngredientResource;
 use App\Models\Ingredient;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,8 @@ class IngredientController extends Controller
      */
     public function index()
     {
-        $ingredients = Ingredient::all();
-        return response()->json($ingredients);
+        $ingredients = Ingredient::with('plats')->get();
+        return response()->json(IngredientResource::collection($ingredients), 200);
     }
 
     /**
@@ -25,15 +26,16 @@ class IngredientController extends Controller
     public function store(StoreIngredientRequest $request)
     {
         $ingredient = Ingredient::create($request->validated());
-        return response()->json($ingredient, 201);
+        return response()->json(new IngredientResource($ingredient), 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Ingredient $ingredient)
     {
-        //
+        $ingredient->load('plats');
+        return response()->json(new IngredientResource($ingredient), 200);
     }
 
     /**
@@ -42,7 +44,8 @@ class IngredientController extends Controller
     public function update(UpdateIngredientRequest $request, Ingredient $ingredient)
     {
         $ingredient->update($request->validated());
-        return response()->json($ingredient);
+        $ingredient = $ingredient->fresh()->load('plats');
+        return response()->json(new IngredientResource($ingredient), 200);
     }
 
     /**
@@ -51,6 +54,6 @@ class IngredientController extends Controller
     public function destroy(Ingredient $ingredient)
     {
         $ingredient->delete();
-        return response()->json(['message' => 'Deleted successfully.'], 200);
+        return response()->json(['message' => 'Ingredient deleted successfully'], 200);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProfileRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,12 +22,13 @@ class AuthController extends Controller
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role' => $firstUser ? 'admin' : 'client',
+            'dietary_tags' => $request->dietary_tags ?? [],
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user'         => $user,
+            'user'         => new UserResource($user),
             'token'        => $token,
             'token_type'   => 'Bearer',
         ], 201);
@@ -55,7 +57,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user'       => $user,
+            'user'       => new UserResource($user),
             'token'      => $token,
             'token_type' => 'Bearer',
         ]);
@@ -64,7 +66,7 @@ class AuthController extends Controller
     // Get authenticated user
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json(new UserResource($request->user()));
     }
 
     // Logout
@@ -83,5 +85,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out from all devices.']);
     }
-
 }

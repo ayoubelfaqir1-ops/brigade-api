@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PlatResource;
 use App\Models\Plat;
 use App\Http\Requests\StorePlatRequest;
 use App\Http\Requests\UpdatePlatRequest;
@@ -46,7 +47,8 @@ class PlatController extends Controller
         {
             $plat->ingredients()->attach($request->ingredients);
         }
-        return response()->json($plat->load('category'), 201);
+        $plat->load('category', 'ingredients');
+        return response()->json(new PlatResource($plat), 201);
     }
 
     /**
@@ -54,7 +56,8 @@ class PlatController extends Controller
      */
     public function show(Plat $plat)
     {
-        return response()->json($plat->load('category','ingredients'), 200);
+        $plat->load('category','ingredients');
+        return response()->json(new PlatResource($plat), 200);
     }
 
     /**
@@ -67,7 +70,8 @@ class PlatController extends Controller
         {
             $plat->ingredients()->sync($request->ingredients);
         }
-        return response()->json($plat->fresh()->load('category','ingredients'));
+        $plat = $plat->fresh()->load('category','ingredients');
+        return response()->json(new PlatResource($plat), 200);
     }
 
     /**
@@ -93,11 +97,12 @@ class PlatController extends Controller
             'image' => $imagePath,
         ]);
 
-        return response()->json($plat);
+        return response()->json(new PlatResource($plat));
     }
 
     public function ingredients(Plat $plat)
     {
-        return response()->json($plat->load('ingredients'));
+        $plat->load('ingredients');
+        return response()->json(new PlatResource($plat));
     }
 }

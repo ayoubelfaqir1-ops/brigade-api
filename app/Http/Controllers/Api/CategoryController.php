@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\PlatResource;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -18,7 +20,7 @@ class CategoryController extends Controller
     {
         try {
             $categories = Category::with('plats')->get();
-            return response()->json($categories, 200);
+            return response()->json(CategoryResource::collection($categories), 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch categories'], 500);
         }
@@ -31,7 +33,7 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::create($request->validated());
-            return response()->json($category, 201);
+            return response()->json(new CategoryResource($category), 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create category'], 500);
         }
@@ -43,7 +45,8 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         try {
-            return response()->json($category->load('plats'), 200);
+            $category->load('plats');
+            return response()->json(new CategoryResource($category), 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Category not found'], 404);
         }
@@ -56,7 +59,7 @@ class CategoryController extends Controller
     {
         try {
             $category->update($request->validated());
-            return response()->json($category, 200);
+            return response()->json(new CategoryResource($category), 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to update category'], 500);
         }
@@ -81,8 +84,8 @@ class CategoryController extends Controller
     public function plats(Category $category)
     {
         try {
-            $plats = $category->plats;
-            return response()->json($plats, 200);
+            $plats = $category->plats()->with('category', 'ingredients')->get();
+            return response()->json(PlatResource::collection($plats), 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch category plats'], 500);
         }
