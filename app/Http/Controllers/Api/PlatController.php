@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PlatController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Plat::class, 'plat');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -88,6 +92,7 @@ class PlatController extends Controller
 
     public function updateImage(UploadImageRequest $request, Plat $plat)
     {
+        $this->authorize('uploadImage', $plat);
 
         if ($plat->getRawOriginal('image')) {
             Storage::disk('public')->delete($plat->getRawOriginal('image'));
@@ -97,11 +102,13 @@ class PlatController extends Controller
             'image' => $imagePath,
         ]);
 
-        return response()->json(new PlatResource($plat));
+        return response()->json(new PlatResource($plat->fresh()->load('category', 'ingredients')));
     }
 
     public function ingredients(Plat $plat)
     {
+        $this->authorize('view', $plat);
+        
         $plat->load('ingredients');
         return response()->json(new PlatResource($plat));
     }

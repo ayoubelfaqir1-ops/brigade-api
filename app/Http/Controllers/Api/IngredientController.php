@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 
 class IngredientController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Ingredient::class, 'ingredient');
+    }
     /**
      * Display a listing of the resource.
      */

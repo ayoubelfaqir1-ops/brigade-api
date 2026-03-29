@@ -13,6 +13,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, 'category');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -83,6 +88,8 @@ class CategoryController extends Controller
      */
     public function plats(Category $category)
     {
+        $this->authorize('view', $category);
+        
         try {
             $plats = $category->plats()->with('category', 'ingredients')->get();
             return response()->json(PlatResource::collection($plats), 200);
@@ -96,6 +103,8 @@ class CategoryController extends Controller
      */
     public function stats(Category $category)
     {
+        $this->authorize('view', $category);
+        
         try {
             $stats = [
                 'plats_count' => $category->plats()->count(),

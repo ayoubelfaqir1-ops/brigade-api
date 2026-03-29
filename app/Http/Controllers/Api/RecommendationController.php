@@ -15,13 +15,19 @@ class RecommendationController extends Controller
 {
     public function __construct(
         private RecommendationService $service
-    ) {}
+    ) {
+        $this->authorizeResource(Recommendation::class, 'recommendation', [
+            'except' => ['index', 'store']
+        ]);
+    }
 
     /**
      * Display a listing of the resource.
      */
     public function index(Plat $plat = null)
     {
+        $this->authorize('viewAny', Recommendation::class);
+        
         $recommendations = Recommendation::where('user_id', auth()->user()->id)
             ->with(['plat.category', 'plat.ingredients', 'user'])
             ->when($plat, function ($query) use ($plat) {
@@ -38,6 +44,8 @@ class RecommendationController extends Controller
      */
     public function store(StoreRecommendationRequest $request, Plat $plat)
     {
+        $this->authorize('analyze', Recommendation::class);
+        
         $user = $request->user();
 
         if (!$plat) {
@@ -57,11 +65,6 @@ class RecommendationController extends Controller
      */
     public function show(Recommendation $recommendation)
     {
-        // Ensure user can only see their own recommendations
-        if ($recommendation->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
         $recommendation->load(['plat.category', 'plat.ingredients', 'user']);
         return response()->json(new RecommendationResource($recommendation), 200);
     }
@@ -71,11 +74,6 @@ class RecommendationController extends Controller
      */
     public function destroy(Recommendation $recommendation)
     {
-        // Ensure user can only delete their own recommendations
-        if ($recommendation->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
         $recommendation->delete();
         return response()->json(['message' => 'Recommendation deleted successfully'], 200);
     }

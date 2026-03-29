@@ -16,6 +16,8 @@ class ProfileController extends Controller
      */
     public function show(Request $request)
     {
+        $this->authorize('view', $request->user());
+        
         return response()->json(new UserResource($request->user()), 200);
     }
 
@@ -24,6 +26,8 @@ class ProfileController extends Controller
      */
     public function update(UpdateProfileRequest $request)
     {
+        $this->authorize('update', $request->user());
+        
         $user = $request->user();
         $user->update($request->validated());
 

@@ -13,6 +13,8 @@ class AdminController extends Controller
 {
     public function dashboard(): JsonResponse
     {
+        $this->authorize('viewAdminDashboard', auth()->user());
+        
         $totalPlates = Plat::count();
         $totalCategories = Category::count();
         $totalIngredients = Ingredient::count();
