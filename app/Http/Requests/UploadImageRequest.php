@@ -25,4 +25,17 @@ class UploadImageRequest extends FormRequest
             'image'        => 'required|image|mimes:jpg,jpeg,png,webp|max:2048'
         ];
     }
+
+    /**
+     * Get custom validation messages.
+     */
+    public function messages(): array
+    {
+        return [
+            'image.required' => 'Please select an image to upload.',
+            'image.image' => 'The uploaded file must be an image.',
+            'image.mimes' => 'Only JPG, JPEG, PNG, and WebP image formats are allowed.',
+            'image.max' => 'Image size must not exceed 2MB.',
+        ];
+    }
 }

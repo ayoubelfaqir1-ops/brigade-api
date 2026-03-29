@@ -34,12 +34,18 @@ class StoreProfileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'     => 'Name is required.',
-            'email.required'    => 'Email is required.',
-            'email.unique'      => 'This email is already taken.',
+            'name.required' => 'Full name is required.',
+            'name.string' => 'Full name must be text.',
+            'name.max' => 'Full name cannot exceed 255 characters.',
+            'email.required' => 'Email address is required.',
+            'email.email' => 'Please provide a valid email address.',
+            'email.unique' => 'This email address is already registered.',
             'password.required' => 'Password is required.',
-            'password.min'      => 'Password must be at least 8 characters.',
-            'dietary_tags.*.in' => 'One or more tags are not valid.',
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.confirmed' => 'Password confirmation does not match.',
+            'dietary_tags.array' => 'Dietary preferences must be provided as a list.',
+            'dietary_tags.*.string' => 'Each dietary preference must be text.',
+            'dietary_tags.*.in' => 'One or more dietary preferences are invalid. Please select from the available options.',
         ];
     }
 

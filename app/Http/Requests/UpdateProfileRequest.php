@@ -33,9 +33,13 @@ class UpdateProfileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.unique'        => 'This email is already taken.',
-            'dietary_tags.array'  => 'Dietary tags must be a list.',
-            'dietary_tags.*.in'   => 'One or more tags are not valid.',
+            'name.string' => 'Full name must be text.',
+            'name.max' => 'Full name cannot exceed 255 characters.',
+            'email.email' => 'Please provide a valid email address.',
+            'email.unique' => 'This email address is already registered.',
+            'dietary_tags.array' => 'Dietary preferences must be provided as a list.',
+            'dietary_tags.*.string' => 'Each dietary preference must be text.',
+            'dietary_tags.*.in' => 'One or more dietary preferences are invalid. Please select from the available options.',
         ];
     }
 }

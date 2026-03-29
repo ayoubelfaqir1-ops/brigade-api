@@ -27,4 +27,25 @@ class StoreCategoryRequest extends FormRequest
             "color"=>["required","string","regex:/^#[0-9A-Fa-f]{6}$/"],
         ];
     }
+
+    /**
+     * Get custom validation messages.
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Category name is required.',
+            'name.string' => 'Category name must be text.',
+            'name.min' => 'Category name must be at least 3 characters.',
+            'name.max' => 'Category name cannot exceed 20 characters.',
+            'name.unique' => 'A category with this name already exists.',
+            'description.required' => 'Category description is required.',
+            'description.string' => 'Category description must be text.',
+            'description.min' => 'Category description must be at least 10 characters.',
+            'description.max' => 'Category description cannot exceed 40 characters.',
+            'color.required' => 'Category color is required.',
+            'color.string' => 'Category color must be text.',
+            'color.regex' => 'Category color must be a valid hex color (e.g., #FF5733).',
+        ];
+    }
 }
