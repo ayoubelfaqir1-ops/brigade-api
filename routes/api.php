@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\PlatController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\api\RecommendationController;
+use App\Http\Controllers\Api\AdminController;
 use App\Models\Ingredient;
 
 Route::get('/user', function (Request $request) {
@@ -31,4 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('recommendations', [RecommendationController::class,'index']);
     Route::post('recommendations/analyze/{plat}', [RecommendationController::class,'store']);
     Route::get('recommendations/{plat}', [RecommendationController::class,'index']);
+    Route::get('recommendations/show/{recommendation}', [RecommendationController::class,'show']);
+    Route::delete('recommendations/{recommendation}', [RecommendationController::class,'destroy']);
+    Route::get('admin/dashboard', [AdminController::class, 'dashboard']);
 });
