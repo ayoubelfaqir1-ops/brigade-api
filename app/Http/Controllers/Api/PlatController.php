@@ -9,19 +9,21 @@ use App\Http\Requests\StorePlatRequest;
 use App\Http\Requests\UpdatePlatRequest;
 use App\Http\Requests\UploadImageRequest;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
 class PlatController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Plat::class, 'plat');
+        // Authorization handled in individual methods
     }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Plat::class);
+        
         $query = Plat::with('category','ingredients');
 
         if ($request->has('search')) {
@@ -46,6 +48,8 @@ class PlatController extends Controller
      */
     public function store(StorePlatRequest $request)
     {
+        $this->authorize('create', Plat::class);
+        
         $plat = Plat::create($request->validated());
         if($request->filled('ingredients'))
         {
@@ -60,6 +64,8 @@ class PlatController extends Controller
      */
     public function show(Plat $plat)
     {
+        $this->authorize('view', $plat);
+        
         $plat->load('category','ingredients');
         return response()->json(new PlatResource($plat), 200);
     }
@@ -69,6 +75,8 @@ class PlatController extends Controller
      */
     public function update(UpdatePlatRequest $request, Plat $plat)
     {
+        $this->authorize('update', $plat);
+        
         $plat->update($request->validated());
         if($request->has('ingredients'))
         {
@@ -83,6 +91,8 @@ class PlatController extends Controller
      */
     public function destroy(Plat $plat)
     {
+        $this->authorize('delete', $plat);
+        
         $plat->delete();
 
         return response()->json([

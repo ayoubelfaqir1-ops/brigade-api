@@ -8,14 +8,14 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PlatResource;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Category::class, 'category');
+        // Authorization handled in individual methods
     }
 
     /**
@@ -23,6 +23,8 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Category::class);
+        
         try {
             $categories = Category::with('plats')->get();
             return response()->json(CategoryResource::collection($categories), 200);
@@ -36,6 +38,8 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
+        $this->authorize('create', Category::class);
+        
         try {
             $category = Category::create($request->validated());
             return response()->json(new CategoryResource($category), 201);
@@ -49,6 +53,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
+        $this->authorize('view', $category);
+        
         try {
             $category->load('plats');
             return response()->json(new CategoryResource($category), 200);
@@ -62,6 +68,8 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
+        $this->authorize('update', $category);
+        
         try {
             $category->update($request->validated());
             return response()->json(new CategoryResource($category), 200);
@@ -75,6 +83,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $this->authorize('delete', $category);
+        
         try {
             $category->delete();
             return response()->json(['message' => 'Category deleted successfully'], 200);

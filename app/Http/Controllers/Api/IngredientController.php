@@ -13,13 +13,15 @@ class IngredientController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Ingredient::class, 'ingredient');
+        // Authorization handled in individual methods
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $this->authorize('viewAny', Ingredient::class);
+        
         $ingredients = Ingredient::with('plats')->get();
         return response()->json(IngredientResource::collection($ingredients), 200);
     }
@@ -29,6 +31,8 @@ class IngredientController extends Controller
      */
     public function store(StoreIngredientRequest $request)
     {
+        $this->authorize('create', Ingredient::class);
+        
         $ingredient = Ingredient::create($request->validated());
         return response()->json(new IngredientResource($ingredient), 201);
     }
@@ -38,6 +42,8 @@ class IngredientController extends Controller
      */
     public function show(Ingredient $ingredient)
     {
+        $this->authorize('view', $ingredient);
+        
         $ingredient->load('plats');
         return response()->json(new IngredientResource($ingredient), 200);
     }
@@ -47,6 +53,8 @@ class IngredientController extends Controller
      */
     public function update(UpdateIngredientRequest $request, Ingredient $ingredient)
     {
+        $this->authorize('update', $ingredient);
+        
         $ingredient->update($request->validated());
         $ingredient = $ingredient->fresh()->load('plats');
         return response()->json(new IngredientResource($ingredient), 200);
@@ -57,6 +65,8 @@ class IngredientController extends Controller
      */
     public function destroy(Ingredient $ingredient)
     {
+        $this->authorize('delete', $ingredient);
+        
         $ingredient->delete();
         return response()->json(['message' => 'Ingredient deleted successfully'], 200);
     }
