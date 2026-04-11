@@ -18,8 +18,7 @@ class ProcessRecommendation implements ShouldQueue
      */
     public function __construct(
         private User           $user,
-        private Plat           $plat,
-        private RecommendationService $service
+        private Plat           $plat
     )
     {
         
@@ -28,13 +27,13 @@ class ProcessRecommendation implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(RecommendationService $service): void
     {
         // Analyze compatibility using the service
-            $result = $this->service->analyze($this->user, $this->plat);
+            $result = $service->analyze($this->user, $this->plat);
 
             // Create the recommendation with analysis results and ready status
-            $recommendation = Recommendation::create([
+            Recommendation::create([
                 'user_id' => $this->user->id,
                 'plat_id' => $this->plat->id,
                 'score' => $result['score'] ?? 0,

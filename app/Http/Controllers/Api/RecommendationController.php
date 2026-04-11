@@ -8,23 +8,18 @@ use App\Http\Resources\RecommendationResource;
 use App\Jobs\ProcessRecommendation;
 use App\Models\Plat;
 use App\Models\Recommendation;
-use App\Services\RecommendationService;
 use Illuminate\Http\Request;
 
 class RecommendationController extends Controller
 {
-    public function __construct(
-        private RecommendationService $service
-    ) {
-        $this->authorizeResource(Recommendation::class, 'recommendation', [
-            'except' => ['index', 'store']
-        ]);
+    public function __construct() {
+        // Authorization handled in individual methods
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Plat $plat = null)
+    public function index(Plat|null $plat = null)
     {
         $this->authorize('viewAny', Recommendation::class);
         
@@ -53,7 +48,7 @@ class RecommendationController extends Controller
         }
 
         try {
-            ProcessRecommendation::dispatch($user, $plat, $this->service);
+            ProcessRecommendation::dispatch($user, $plat);
             return response()->json(['message' => 'Recommendation analysis queued successfully'], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Analysis failed: ' . $e->getMessage()], 500);
@@ -65,6 +60,8 @@ class RecommendationController extends Controller
      */
     public function show(Recommendation $recommendation)
     {
+        $this->authorize('view', $recommendation);
+        
         $recommendation->load(['plat.category', 'plat.ingredients', 'user']);
         return response()->json(new RecommendationResource($recommendation), 200);
     }
@@ -74,6 +71,8 @@ class RecommendationController extends Controller
      */
     public function destroy(Recommendation $recommendation)
     {
+        $this->authorize('delete', $recommendation);
+        
         $recommendation->delete();
         return response()->json(['message' => 'Recommendation deleted successfully'], 200);
     }
