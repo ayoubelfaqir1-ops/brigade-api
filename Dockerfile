@@ -26,4 +26,4 @@ RUN composer install --no-dev --optimize-autoloader
 RUN mkdir -p database && touch database/database.sqlite
 
 # Start Laravel server (Render will provide PORT)
-CMD php artisan migrate --force || true && php artisan serve --host=0.0.0.0 --port=$PORT
+CMD php artisan migrate --force || true && php -S 0.0.0.0:$PORT -t public
